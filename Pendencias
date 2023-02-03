@@ -1,0 +1,31 @@
+Pendencias de usabilidade:
+			
+	- Criar a pagina de Minhas Solicitacoes
+		Vai mostrar as solicitacoes aceitas + em aberto em uma area e as ja finalizadas com o status (se foi resolvida ou nao)
+
+	- Criar a pagina de Criar uma Solicitação
+		Vai abrir um formulario pra preencher a duvida, a observação e o preço
+		
+	- Na pagina da minha conta, atualizar as informacoes no banco de dados quando voce enviar
+		Fazer aparecer como default o que ja existe, e um botao de "alterar" ao lado
+			Se clicar nesse botao, o default do campo que voce quer alterar some e abre o input
+			
+	- Verificar se as paginas so abrem se tiver com o token certinho
+	
+	- Descobrir como salvar e pegar imagens no db
+
+	- Mudar a seed pra valer pro novo migrations
+
+
+
+ETAPA 2:
+
+Escrever os testes de integração pras rotas
+
+ETAPA 3: 
+
+Fazer rodar a aplicacao no docker
+
+ETAPA 4:
+
+Fazer rodar o docker no servidor AWS

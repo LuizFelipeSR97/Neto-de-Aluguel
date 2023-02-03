@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model servicesStatus {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @unique @db.VarChar(50)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+  services            services[]
+}
+
+model userTypes {
+  id                  Int @id             @default(autoincrement())
+  name                String              @unique @db.VarChar(100)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+  users               users[]
+}
+
+model messageStatus {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @unique @db.VarChar(50)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+  messages            messages[]
+}
+
+model usersStatus {
+  id                  Int @id             @default(autoincrement())
+  name                String              @unique @db.VarChar(100)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+  users               users[]
+}
+
+model users {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @default("")
+  surname             String              @default("")
+  photoUrl            String              @default("")
+  birthday            String              @default("")
+  email               String              @default("")
+  password            String              @default("")
+  userTypes           userTypes           @relation(fields: [typeId], references: [id])
+  typeId              Int                 @default(1)
+  usersStatus         usersStatus         @relation(fields: [statusId], references: [id])
+  statusId            Int                 @default(3)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+  requester           services[]          @relation("requester")
+  helper              services[]          @relation("helper")
+  firstUser           conversations[]     @relation("firstUser")
+  secondUser          conversations[]     @relation("secondUser")
+  recipient           messages[]          @relation("recipient")
+  sender              messages[]          @relation("sender")
+  sessions            sessions[]
+  addresses           addresses[]
+}
+
+model services {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @db.VarChar(100)
+  description         String              @db.VarChar(255)
+  servicesStatus      servicesStatus      @relation(fields: [statusId], references: [id])
+  statusId            Int
+  requesterUser       users               @relation("requester", fields: [requesterId], references: [id])
+  requesterId         Int
+  helperUser          users               @relation("helper", fields: [helperId], references: [id])
+  helperId            Int                 
+  price               Int
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+}
+
+model conversations {
+  id                  Int                 @id @default(autoincrement())
+  requester           users               @relation("firstUser", fields: [requesterId], references: [id])
+  requesterId         Int
+  helper              users               @relation("secondUser", fields: [helperId], references: [id])
+  helperId            Int
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+  messages            messages[]
+}
+
+model messages {
+  id                  Int                 @id @default(autoincrement())
+  text                String
+  senderUser          users               @relation("sender", fields: [senderId], references: [id])
+  senderId            Int
+  recipientUser       users               @relation("recipient", fields: [recipientId], references: [id])
+  recipientId         Int
+  conversations       conversations       @relation(fields: [conversationId], references: [id])
+  conversationId      Int
+  messageStatus       messageStatus       @relation(fields: [statusId], references: [id])
+  statusId            Int
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+}
+
+model sessions {
+  id                  Int                 @id @default(autoincrement())
+  users               users               @relation(fields: [userId], references: [id])
+  userId              Int
+  token               String              @unique
+  isActive            Boolean             @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+}
+
+model addresses {
+  id                  Int                 @id @default(autoincrement())
+  users               users               @relation(fields: [userId], references: [id])
+  userId              Int
+  name                String              @default("")
+  country             String              @default("")
+  state               String              @default("")
+  city                String              @default("")
+  district            String              @default("")
+  street              String              @default("-")
+  number              String              @default("-")
+  complement          String              @default("-")
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now()) @updatedAt
+}
